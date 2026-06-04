@@ -15,6 +15,14 @@
                 <!-- begin: Filtration form -->
                 <div class="form form-label-right" [formGroup]="filterGroup">
                     <div class="form-group row mb-1">
+                        <label class="text-bold col-12 col-form-label">Chromosome</label>
+                        <div class="col-12">
+                            <ng-select2 [data]="chromosomeList" placeholder="Select Chromosome" [options]="options"
+                                formControlName="chromosome">
+                            </ng-select2>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-1">
                         <label class="text-bold col-12 col-form-label">Gene</label>
                         <div class="col-12">
                             <ng-select2 placeholder="Select Gene name" [options]="options" formControlName="geneName">
@@ -97,14 +105,6 @@
                             <ng-select2 [data]="annotationList" placeholder="Select Annotation"
                                 [options]="annotationOptions" formControlName="annotation"
                                 (valueChanged)="onTagChanged($event)">
-                            </ng-select2>
-                        </div>
-                    </div>
-                    <div class="form-group row mb-1">
-                        <label class="text-bold col-12 col-form-label">Chromosome</label>
-                        <div class="col-12">
-                            <ng-select2 [data]="chromosomeList" placeholder="Select Chromosome" [options]="options"
-                                formControlName="chromosome">
                             </ng-select2>
                         </div>
                     </div>

@@ -8,7 +8,8 @@ type Tabs =
 	| 'quality_control'
 	| 'variant_list'
 	| 'variant_report'
-	| 'patient_information';
+	| 'patient_information'
+	| 'clinical_summary';
 
 const BASIC_RESTRICTED_TABS: Tabs[] = ['quality_control', 'variant_report'];
 const PLAN_KEY = 'current_subscription_plan';

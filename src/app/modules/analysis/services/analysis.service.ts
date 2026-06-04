@@ -47,4 +47,8 @@ export class AnalysisService {
   getIgvInfo(id: number): Observable<any> {
     return this.http.get(`${API_ANALYSIS_URL}/igv-info/${id}`, { withCredentials: true });
   }
+
+  getClinicalSummary(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/variants/clinical-summary/${id}`, { withCredentials: true });
+  }
 }

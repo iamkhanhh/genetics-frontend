@@ -138,6 +138,7 @@ export const locale = {
       VARIANT_LIST: 'バリアントリスト',
       VARIANT_REPORT: 'バリアントレポート',
       PATIENT_INFORMATION: '患者情報',
+      CLINICAL_SUMMARY: '臨床要約',
       APPLY: '適用',    
       RESET: 'リセット',
     },

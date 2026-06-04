@@ -1,0 +1,278 @@
+<!-- Loading state -->
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="min-height: 400px">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<!-- Error state -->
+<div *ngIf="!isLoading && hasError" class="alert alert-danger m-5">
+  <i class="ki-duotone ki-shield-cross fs-2 me-2">
+    <span class="path1"></span><span class="path2"></span>
+  </i>
+  Unable to load clinical summary. Please try again later.
+</div>
+
+<!-- Main content -->
+<div *ngIf="!isLoading && !hasError" class="clinical-summary">
+
+  <!-- ROW 1: Donut chart + Stats breakdown -->
+  <div class="row mb-6">
+
+    <!-- Donut chart -->
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header border-0 pb-0">
+          <h5 class="card-title fw-bold text-gray-800">Variant Classification Overview</h5>
+        </div>
+        <div class="card-body pt-2">
+          <apx-chart *ngIf="chartOptions"
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [labels]="chartOptions.labels"
+            [colors]="chartOptions.colors"
+            [plotOptions]="chartOptions.plotOptions"
+            [dataLabels]="chartOptions.dataLabels"
+            [legend]="chartOptions.legend"
+            [tooltip]="chartOptions.tooltip"
+            [stroke]="chartOptions.stroke">
+          </apx-chart>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats breakdown -->
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header border-0 pb-0">
+          <h5 class="card-title fw-bold text-gray-800">Classification Breakdown</h5>
+        </div>
+        <div class="card-body pt-3">
+          <div class="row g-3">
+            <div class="col-6" *ngFor="let key of chartOrder">
+              <div class="d-flex align-items-center p-3 rounded-2 bg-light-subtle border">
+                <div class="me-3">
+                  <span class="badge fs-7 fw-bold"
+                    [ngClass]="getClinsigConfig(key).badgeClass"
+                    style="min-width: 36px; text-align:center">
+                    {{ getClinsigConfig(key).shortLabel }}
+                  </span>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-semibold text-gray-700 fs-7 text-center">
+                    {{ getClinsigConfig(key).label }}
+                  </div>
+                  <div class="fw-bold fs-5 text-gray-900">
+                    {{ stats[key] || 0 }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actionable variants highlight -->
+          <div class="mt-4 p-3 rounded-2 border border-danger border-dashed bg-light-danger">
+            <div class="d-flex align-items-center">
+              <i class="ki-duotone ki-information-5 text-danger fs-2 me-2">
+                <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+              </i>
+              <div>
+                <span class="fw-bold text-danger fs-6">
+                  {{ (stats['pathogenic'] || 0) + (stats['likely pathogenic'] || 0) }}
+                  actionable variant(s) detected
+                </span>
+                <div class="text-muted fs-7">
+                  Pathogenic and Likely Pathogenic variants require clinical attention
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Key Clinical Findings Table (P + LP only) -->
+  <div class="card border-0 shadow-sm mb-6" *ngIf="significantVariants.length > 0">
+    <div class="card-header border-0">
+      <h5 class="card-title fw-bold text-gray-800">
+        <i class="ki-duotone ki-shield-tick text-danger fs-2 me-2">
+          <span class="path1"></span><span class="path2"></span>
+        </i>
+        Key Clinical Findings
+      </h5>
+    </div>
+    <div class="card-body pt-0">
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table" style="width: 100%; position: relative;">
+            <div>
+                <table style="table-layout: fixed; overflow-x: auto !important; width: 100%"
+                    class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4 overflow-hidden table-vertical-center">
+                    <thead class="fw-bolder text-muted">
+                        <tr>
+                            <th>GENE</th>
+                            <th>VARIANT (HGVSc / HGVSp)</th>
+                            <th>MUTATION TYPE</th>
+                            <th>DISEASE ASSOCIATION</th>
+                            <th>SIGNIFICANCE</th>
+                            <th>
+                              EVIDENCE SCORE
+                              <button type="button"
+                                class="btn btn-icon btn-sm btn-active-light-primary ms-1 p-0"
+                                style="width: 18px; height: 18px; vertical-align: middle"
+                                (click)="openEvidenceModal()"
+                                title="How is this score calculated?">
+                                <i class="ki-duotone ki-information-5 fs-7 text-muted">
+                                  <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                                </i>
+                              </button>
+                            </th>
+                            <th>POPULATION FREQUENCY</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let v of significantVariants">
+                          <!-- Gene -->
+                          <td>
+                            <span class="fw-bold text-primary fs-6">{{ v.gene }}</span>
+                            <div class="text-muted fs-8">Chr {{ v.chrom }}: {{ v.pos }}</div>
+                          </td>
+
+                          <!-- Variant notation -->
+                          <td>
+                            <div class="fw-semibold text-gray-800">{{ v.cnomen || '—' }}</div>
+                            <div class="text-muted fs-7">{{ v.pnomen || '—' }}</div>
+                          </td>
+
+                          <!-- Mutation type — clinical language -->
+                          <td>
+                            <span class="text-gray-700 fs-7">
+                              {{ getConsequenceLabel(v.consequence) }}
+                            </span>
+                          </td>
+
+                          <!-- Disease associations from OMIM -->
+                          <td style="max-width: 220px">
+                            <ng-container *ngIf="v.diseases && v.diseases.length > 0; else noDiseases">
+                              <div *ngFor="let d of v.diseases | slice:0:2" class="mb-1">
+                                <span class="text-gray-700 fs-7">{{ $any(d).pheno_name }}</span>
+                                <a *ngIf="$any(d).pheno_omim"
+                                  [href]="getOmimUrl($any(d).pheno_omim)"
+                                  target="_blank"
+                                  class="ms-1 text-muted fs-8"
+                                  title="View in OMIM">
+                                  [OMIM]
+                                </a>
+                              </div>
+                              <span *ngIf="v.diseases.length > 2" class="text-muted fs-8">
+                                +{{ v?.diseases.length - 2 }} more
+                              </span>
+                            </ng-container>
+                            <ng-template #noDiseases>
+                              <span class="text-muted fs-7">No OMIM record</span>
+                            </ng-template>
+                          </td>
+
+                          <!-- Classification badge -->
+                          <td>
+                            <span class="badge fw-bold"
+                              [ngClass]="getClinsigConfig(v.classification).badgeClass">
+                              {{ getClinsigConfig(v.classification).label }}
+                            </span>
+                            <div *ngIf="v.clinvarId && v.clinvarId !== '.'" class="mt-1">
+                              <span class="text-muted fs-8">ClinVar: {{ v.clinvarId }}</span>
+                            </div>
+                          </td>
+
+                          <!-- Evidence score -->
+                          <td>
+                            <span class="fw-bold fs-6"
+                              [ngClass]="{
+                                'text-danger':  v.clinicalScore >= 12,
+                                'text-warning': v.clinicalScore >= 7 && v.clinicalScore < 12,
+                                'text-primary': v.clinicalScore < 7
+                              }">
+                              {{ v.clinicalScore }}<span class="text-muted fw-normal fs-8">/17</span>
+                            </span>
+                          </td>
+
+                          <!-- Population frequency -->
+                          <td>
+                            <span class="fs-7 text-gray-700">{{ formatFrequency(v.gnomad) }}</span>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- end: Table -->
+    </div>
+  </div>
+
+  <!-- Empty state when no P/LP -->
+  <div class="card border-0 shadow-sm mb-6 text-center py-8"
+       *ngIf="significantVariants.length === 0">
+    <i class="ki-duotone ki-shield-check text-success fs-3x mb-3">
+      <span class="path1"></span><span class="path2"></span>
+    </i>
+    <h5 class="text-gray-700">No Pathogenic or Likely Pathogenic Variants Found</h5>
+    <p class="text-muted fs-7">No variants with established disease significance were detected in this analysis.</p>
+  </div>
+
+  <!-- ROW 3: Disease Suggestions Cards -->
+  <div class="mb-6" *ngIf="diseaseSuggestions.length > 0">
+    <h5 class="fw-bold text-gray-800 mb-4">
+      <i class="ki-duotone ki-abstract-26 text-warning fs-2 me-2">
+        <span class="path1"></span><span class="path2"></span>
+      </i>
+      Disease Associations
+      <span class="badge badge-light-warning ms-2">{{ diseaseSuggestions.length }}</span>
+    </h5>
+    <p class="text-muted fs-7 mb-4">
+      The following conditions are associated with the pathogenic/likely pathogenic variants detected.
+      Associations are derived from OMIM (Online Mendelian Inheritance in Man).
+    </p>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-xl-4" *ngFor="let disease of diseaseSuggestions">
+        <div class="card border-0 shadow-sm h-100"
+             [ngClass]="disease.max_severity === 'pathogenic' ? 'border-start border-3 border-danger' : 'border-start border-3 border-warning'">
+          <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge fw-bold"
+                [ngClass]="getClinsigConfig(disease.max_severity).badgeClass">
+                {{ getClinsigConfig(disease.max_severity).label }}
+              </span>
+              <span class="badge badge-light-secondary fs-8">
+                {{ disease.variant_count }} supporting variant{{ disease.variant_count > 1 ? 's' : '' }}
+              </span>
+            </div>
+
+            <h6 class="fw-bold text-gray-800 mb-2" style="line-height: 1.4">
+              {{ disease.pheno_name }}
+            </h6>
+
+            <div class="mb-2">
+              <span class="text-muted fs-7 me-1">Gene(s):</span>
+              <span *ngFor="let gene of disease.genes; let last = last"
+                    class="fw-semibold text-primary fs-7">
+                {{ gene }}{{ !last ? ', ' : '' }}
+              </span>
+            </div>
+
+            <a *ngIf="disease.pheno_omim"
+               [href]="getOmimUrl(disease.pheno_omim)"
+               target="_blank"
+               class="btn btn-sm btn-light-primary mt-2">
+              <i class="ki-duotone ki-exit-right-corner fs-6 me-1">
+                <span class="path1"></span><span class="path2"></span>
+              </i>
+              OMIM {{ disease.pheno_omim }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

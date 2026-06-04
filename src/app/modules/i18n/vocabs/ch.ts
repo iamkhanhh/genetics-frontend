@@ -138,6 +138,7 @@ export const locale = {
     VARIANT_LIST: '变异列表',
     VARIANT_REPORT: '变异报告',
     PATIENT_INFORMATION: '患者信息',
+    CLINICAL_SUMMARY: '临床摘要',
     APPLY: '申请',
     RESET: '重置',
   },
