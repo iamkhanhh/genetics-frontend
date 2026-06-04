@@ -26,6 +26,9 @@ import { PatientInformationComponent } from './components/patient-information/pa
 import { GeneDetailComponent } from './components/gene-detail/gene-detail.component';
 import { IgvGenomeBrowserComponent } from './components/igv-genome-browser/igv-genome-browser.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { ClinicalSummaryComponent } from './components/clinical-summary/clinical-summary.component';
+import { EvidenceScoreModalComponent } from './components/evidence-score-modal/evidence-score-modal.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,9 @@ import { TranslateModule } from '@ngx-translate/core';
     AnalysisReportDetailComponent,
     PatientInformationComponent,
     GeneDetailComponent,
-    IgvGenomeBrowserComponent
+    IgvGenomeBrowserComponent,
+    ClinicalSummaryComponent,
+    EvidenceScoreModalComponent
   ],
   imports: [
     CommonModule,
@@ -63,7 +68,8 @@ import { TranslateModule } from '@ngx-translate/core';
 		NgbDropdownModule,
 		MatProgressSpinnerModule,
     FormsModule,
-    TranslateModule
+    TranslateModule,
+    NgApexchartsModule
   ]
 })
 export class AnalysisModule { }

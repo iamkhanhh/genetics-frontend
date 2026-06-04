@@ -139,6 +139,7 @@ export const locale = {
       VARIANT_LIST: 'Lista de variantes',
       VARIANT_REPORT: 'Informe de variantes',
       PATIENT_INFORMATION: 'Información del paciente',
+      CLINICAL_SUMMARY: 'Resumen clínico',
       APPLY: 'Aplicar', 
       RESET: 'Reiniciar',
     },

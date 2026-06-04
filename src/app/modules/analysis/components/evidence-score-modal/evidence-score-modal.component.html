@@ -1,0 +1,158 @@
+<div class="modal-header">
+  <h5 class="modal-title fw-bold">
+    <i class="ki-duotone ki-calculator text-primary fs-2 me-2">
+      <span class="path1"></span><span class="path2"></span>
+    </i>
+    How is the Evidence Score calculated?
+  </h5>
+  <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <p class="text-muted fs-7 mb-5">
+    The Evidence Score (0–17) is a composite pathogenicity index derived from eight independent
+    in-silico predictors. Higher scores indicate stronger multi-tool evidence for clinical
+    pathogenicity.
+  </p>
+
+  <div class="table-responsive">
+    <table class="table table-row-dashed table-row-gray-200 align-middle gs-0 gy-3 fs-7">
+      <thead>
+        <tr class="fw-bold text-muted text-uppercase">
+          <th>Predictor</th>
+          <th>Condition</th>
+          <th class="text-center">Points</th>
+          <th>Interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- CADD -->
+        <tr>
+          <td rowspan="3" class="fw-bold text-gray-800 align-top pt-4">CADD PHRED</td>
+          <td class="p-0">≥ 30</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+3</span></td>
+          <td class="text-muted">Top 0.1% most deleterious</td>
+        </tr>
+        <tr>
+          <td>≥ 20</td>
+          <td class="text-center"><span class="badge badge-light-warning fw-bold">+2</span></td>
+          <td class="text-muted">Top 1% most deleterious</td>
+        </tr>
+        <tr>
+          <td>≥ 10</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Above median deleteriousness</td>
+        </tr>
+        <!-- VEP Impact -->
+        <tr class="bg-light">
+          <td rowspan="2" class="fw-bold text-gray-800 align-top pt-4">VEP Impact</td>
+          <td class="p-0">HIGH</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+3</span></td>
+          <td class="text-muted">Frameshift, stop-gain, splice-site</td>
+        </tr>
+        <tr class="bg-light">
+          <td class="p-0">MODERATE</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Missense, in-frame indel</td>
+        </tr>
+        <!-- gnomAD -->
+        <tr>
+          <td rowspan="2" class="fw-bold text-gray-800 align-top pt-4">gnomAD Frequency</td>
+          <td class="p-0">Absent / Novel (0 or N/A)</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+2</span></td>
+          <td class="text-muted">Not observed in population</td>
+        </tr>
+        <tr>
+          <td class="p-0">&lt; 0.001 (0.1%)</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Very rare in general population</td>
+        </tr>
+        <!-- PolyPhen -->
+        <tr class="bg-light">
+          <td rowspan="2" class="fw-bold text-gray-800 align-top pt-4">PolyPhen-2 (HDIV)</td>
+          <td class="p-0">&gt; 0.908</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+2</span></td>
+          <td class="text-muted">Probably damaging</td>
+        </tr>
+        <tr class="bg-light">
+          <td class="p-0">&gt; 0.446</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Possibly damaging</td>
+        </tr>
+        <!-- SIFT -->
+        <tr>
+          <td class="fw-bold text-gray-800">SIFT</td>
+          <td class="p-0">&lt; 0.05</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Deleterious substitution</td>
+        </tr>
+        <!-- REVEL -->
+        <tr class="bg-light">
+          <td rowspan="2" class="fw-bold text-gray-800 align-top pt-4">REVEL</td>
+          <td class="p-0">≥ 0.75</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+2</span></td>
+          <td class="text-muted">Strong pathogenicity evidence</td>
+        </tr>
+        <tr class="bg-light">
+          <td class="p-0">≥ 0.50</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Moderate pathogenicity evidence</td>
+        </tr>
+        <!-- AlphaMissense -->
+        <tr>
+          <td rowspan="2" class="fw-bold text-gray-800 align-top pt-4">AlphaMissense</td>
+          <td class="p-0">likely_pathogenic</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+2</span></td>
+          <td class="text-muted">AI structural pathogenicity prediction</td>
+        </tr>
+        <tr>
+          <td class="p-0">ambiguous</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Uncertain structural effect</td>
+        </tr>
+        <!-- SpliceAI -->
+        <tr class="bg-light">
+          <td rowspan="2" class="fw-bold text-gray-800 align-top pt-4">SpliceAI (max Δ score)</td>
+          <td class="p-0">≥ 0.5</td>
+          <td class="text-center"><span class="badge badge-light-danger fw-bold">+2</span></td>
+          <td class="text-muted">High splice disruption probability</td>
+        </tr>
+        <tr class="bg-light">
+          <td class="p-0">≥ 0.2</td>
+          <td class="text-center"><span class="badge badge-light-primary fw-bold">+1</span></td>
+          <td class="text-muted">Moderate splice disruption probability</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="separator my-5"></div>
+
+  <h6 class="fw-bold text-gray-700 mb-3">Score Interpretation</h6>
+  <div class="d-flex gap-4 flex-wrap mb-5 flex-column">
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge badge-danger fw-bold fs-7 px-3 py-2">12 – 17</span>
+      <span class="text-gray-700 fs-7">Strong multi-tool evidence of pathogenicity</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge badge-warning fw-bold fs-7 px-3 py-2">7 – 11</span>
+      <span class="text-gray-700 fs-7">Moderate evidence — warrants further review</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge badge-primary fw-bold fs-7 px-3 py-2">0 – 6</span>
+      <span class="text-gray-700 fs-7">Limited in-silico support</span>
+    </div>
+  </div>
+
+  <div class="alert alert-light-warning mb-0">
+    <i class="ki-duotone ki-information-5 text-warning fs-6 me-1">
+      <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+    </i>
+    This score is for research assistance only. It does not replace clinical interpretation
+    or ACMG/AMP variant classification guidelines.
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-light" (click)="modal.dismiss()">Close</button>
+</div>
