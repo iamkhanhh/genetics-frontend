@@ -54,7 +54,7 @@
                 <div class="me-3">
                   <span class="badge fs-7 fw-bold"
                     [ngClass]="getClinsigConfig(key).badgeClass"
-                    style="min-width: 36px; text-align:center">
+                    style="min-width: 36px;">
                     {{ getClinsigConfig(key).shortLabel }}
                   </span>
                 </div>
@@ -62,7 +62,7 @@
                   <div class="fw-semibold text-gray-700 fs-7 text-center">
                     {{ getClinsigConfig(key).label }}
                   </div>
-                  <div class="fw-bold fs-5 text-gray-900">
+                  <div class="fw-bold fs-5 text-gray-900 text-center">
                     {{ stats[key] || 0 }}
                   </div>
                 </div>
@@ -244,7 +244,7 @@
                 [ngClass]="getClinsigConfig(disease.max_severity).badgeClass">
                 {{ getClinsigConfig(disease.max_severity).label }}
               </span>
-              <span class="badge badge-light-secondary fs-8">
+              <span class="badge fs-8">
                 {{ disease.variant_count }} supporting variant{{ disease.variant_count > 1 ? 's' : '' }}
               </span>
             </div>
