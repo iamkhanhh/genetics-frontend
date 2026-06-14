@@ -54,7 +54,7 @@ export class WorkspaceService {
 	}
 
 	edit(id: number, data: any): Observable<any> {
-		return this.http.put(`${API_ANALYSIS_URL}/${id}`, data, { withCredentials: true });
+		return this.http.put(`${API_WORKSPACE_URL}/${id}`, data, { withCredentials: true });
 	}
 
 	// analysis handler
