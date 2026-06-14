@@ -81,6 +81,8 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
+            set -e
+
             docker pull ${{ env.IMAGE_NAME }}:latest
 
             docker stop ${{ env.CONTAINER_NAME }} || true
