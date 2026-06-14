@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, Vie
 import { AnalysisService } from '../../services/analysis.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { PricingService } from 'src/app/pages/pricing/pricing.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class QualityControlComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: any) => {
           if (res.status === "success") {
-            this.qcUrl = res.data;
+            this.qcUrl = res.data.replace('http://vg-dev-v2.btgenomics.com/', '/genomics/');
           } else {
             this.toastr.error(res.message);
           }
