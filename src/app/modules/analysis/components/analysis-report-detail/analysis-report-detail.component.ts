@@ -64,9 +64,12 @@ export class AnalysisReportDetailComponent implements OnChanges, OnDestroy {
 
   downloadReport(): void {
     if (!this.id || this.id <= 0) return;
-    // TODO: The download URL should come from the API. Using a placeholder.
-    const fileUrl = `https://genetics-s3-prod.s3.ap-southeast-1.amazonaws.com/public/report_EN123.docx`;
-    window.open(fileUrl, '_blank');
+    const fileUrl = this.report?.download_url;
+    if (fileUrl) {
+      window.open(fileUrl, '_blank');
+    } else {
+      this.toastr.error('Report file URL is not available.');
+    }
   }
 
   ngOnDestroy(): void {
